@@ -1,0 +1,15 @@
+-- Buy and sell goods
+	Selln Value -> Numb. of days to sell item
+	Quality Value -> How valuable an item is
+	At the end of everyday -> each -1 from total
+	ONCE sellByDate passed -> Quality - 2 
+	QUALITY -> Never lower than 0 & Never more than 50.
+	"Aged Brie" -> Quality + 1 at end of day
+	"Sulfuras" -> Never sold & Quality never goes down
+	"Backstage passes" -> Quality + 1 at end of day; 
+		Quality + 2 if SellnValue < 11; 
+		Quality +3 if SellnValue =< 5; 
+		Quality = 0 When SellnValue = 0
+	"Conjured" -> -Quality at double the rate.
+	
+	

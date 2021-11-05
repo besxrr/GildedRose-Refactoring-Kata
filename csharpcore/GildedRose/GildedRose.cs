@@ -16,35 +16,43 @@ namespace GildedRose
 
         public void UpdateQualityOfItems()
         {
-            foreach (var item in Enumerable.Range(1, _items.Count))
+            foreach (var item in _items)
             {
-                if (_items[item].Quality is < 50 and > 0 )
+                if (item.Quality is < 50 and > 0 )
                 {
-                    switch (_items[item].Name)
+
+                    switch (item.Name)
                     {
                         case "Aged Brie":
-                            _items[item].Quality += 1;
+                            item.Quality += 1;
                             break;
                         case "Backstage passes to a TAFKAL80ETC concert":
-                            if (_items[item].SellIn < 11) _items[item].Quality += 2;
-
-                            if (_items[item].SellIn <= 5) _items[item].Quality += 3;
-
-                            if (_items[item].SellIn == 0) _items[item].Quality = 0;
+                            BackstagePassesMethod(item);
                             break;
                         case "Sulfuras, Hand of Ragnaros":
+                            item.Quality = 80;
                             break;
                         default:
-                            _items[item].Quality -= 1;
+                            item.Quality -= 1;
                             break;
                     }
                 }
-                
             }
         }
+        
+        private void BackstagePassesMethod(Item item)
+        {
+            if (item.SellIn < 11) item.Quality += 2;
 
+            if (item.SellIn < 6) item.Quality += 3;
 
-        if (_items[item].Name != "Sulfuras, Hand of Ragnaros")
+            if (item.SellIn == 0) item.Quality = 0;
+
+            else item.Quality += 1;
+        }
+        
+
+        (_items[item].Name != "Sulfuras, Hand of Ragnaros")
                 {
                     _items[item].SellIn = _items[item].SellIn - 1;
                 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
 using GildedRoseKata;
@@ -18,73 +19,61 @@ namespace GildedRose
         {
             foreach (var item in _items)
             {
+                var qualityMultiplier = (item.SellIn > 0) ? 1 : 2;
+                IsSulfurasItem(item);
                 if (item.Quality is < 50 and > 0 )
                 {
-
+                    if (IsConjured(item)) item.Name = "Conjured";
                     switch (item.Name)
                     {
                         case "Aged Brie":
-                            item.Quality += 1;
+                            item.Quality += qualityMultiplier;
                             break;
                         case "Backstage passes to a TAFKAL80ETC concert":
-                            BackstagePassesMethod(item);
+                            item.Quality = Math.Min(BackstageQualityMethod(item, qualityMultiplier), 50);
                             break;
                         case "Sulfuras, Hand of Ragnaros":
                             item.Quality = 80;
+                            item.SellIn = 0;
+                            break;
+                        case "Conjured":
+                            item.Quality -= (qualityMultiplier * 2);
                             break;
                         default:
-                            item.Quality -= 1;
+                            item.Quality -= qualityMultiplier;
                             break;
                     }
                 }
+                item.SellIn -= 1;
             }
         }
-        
-        private void BackstagePassesMethod(Item item)
-        {
-            if (item.SellIn < 11) item.Quality += 2;
 
-            if (item.SellIn < 6) item.Quality += 3;
+        private static bool IsConjured(Item item)
+        {
+            var currentItemName = item.Name.Split(" ");
+            return currentItemName[0] == "Conjured";
+        }
+
+        private static void IsSulfurasItem(Item item)
+        {
+            if (item.Name != "Sulfuras, Hand of Ragnaros") return;
+            item.Quality = 80;
+            item.SellIn = 0;
+        }
+
+        private static int BackstageQualityMethod(Item item, int qualityMultiplier)
+        {
+            if (item.SellIn < 11) item.Quality += (qualityMultiplier * 2);
+
+            if (item.SellIn < 6) item.Quality += (qualityMultiplier * 3);
 
             if (item.SellIn == 0) item.Quality = 0;
 
-            else item.Quality += 1;
-        }
-        
+            else item.Quality += qualityMultiplier;
 
-        (_items[item].Name != "Sulfuras, Hand of Ragnaros")
-                {
-                    _items[item].SellIn = _items[item].SellIn - 1;
-                }
-
-                if (_items[item].SellIn < 0)
-                {
-                    if (_items[item].Name != "Aged Brie")
-                    {
-                        if (_items[item].Name != "Backstage passes to a TAFKAL80ETC concert")
-                        {
-                            if (_items[item].Quality > 0)
-                            {
-                                if (_items[item].Name != "Sulfuras, Hand of Ragnaros")
-                                {
-                                    _items[item].Quality = _items[item].Quality - 1;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            _items[item].Quality = _items[item].Quality - _items[item].Quality;
-                        }
-                    }
-                    else
-                    {
-                        if (_items[item].Quality < 50)
-                        {
-                            _items[item].Quality = _items[item].Quality + 1;
-                        }
-                    }
-                }
-            }
+            return item.Quality;
         }
     }
 }
+    
+

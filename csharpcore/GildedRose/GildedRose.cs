@@ -22,7 +22,6 @@ namespace GildedRose
                 var qualityMultiplier = UpdateQualityMultiplierValue(item);
                 HandleSulfurasItem(item);
                 if (item.Quality is >= 50 or <= 0) continue;
-                // This needs changing
                 if (IsConjured(item)) item.Name = "Conjured";
                 UpdateQualityMultiplierByName(item, qualityMultiplier);
             }

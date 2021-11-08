@@ -48,7 +48,7 @@ namespace GildedRose
             switch (item.Name)
             {
                 case "Aged Brie":
-                    item.Quality += qualityMultiplier;
+                    item.Quality = Math.Min(item.Quality += qualityMultiplier, 50);
                     break;
                 case "Backstage passes to a TAFKAL80ETC concert":
                     UpdateBackstagePassQuality(item, qualityMultiplier);

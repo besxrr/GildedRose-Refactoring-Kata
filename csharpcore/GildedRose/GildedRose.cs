@@ -19,59 +19,80 @@ namespace GildedRose
         {
             foreach (var item in _items)
             {
-                var qualityMultiplier = (item.SellIn > 0) ? 1 : 2;
-                IsSulfurasItem(item);
-                if (item.Quality is < 50 and > 0 )
-                {
-                    if (IsConjured(item)) item.Name = "Conjured";
-                    switch (item.Name)
-                    {
-                        case "Aged Brie":
-                            item.Quality += qualityMultiplier;
-                            break;
-                        case "Backstage passes to a TAFKAL80ETC concert":
-                            item.Quality = Math.Min(BackstageQualityMethod(item, qualityMultiplier), 50);
-                            break;
-                        case "Sulfuras, Hand of Ragnaros":
-                            item.Quality = 80;
-                            item.SellIn = 0;
-                            break;
-                        case "Conjured":
-                            item.Quality -= (qualityMultiplier * 2);
-                            break;
-                        default:
-                            item.Quality -= qualityMultiplier;
-                            break;
-                    }
-                }
+                var qualityMultiplier = UpdateQualityMultiplierValue(item);
+                HandleSulfurasItem(item);
+                if (item.Quality is >= 50 or <= 0) continue;
+                // This needs changing
+                if (IsConjured(item)) item.Name = "Conjured";
+                UpdateQualityMultiplierByName(item, qualityMultiplier);
+            }
+        }
+
+        public void UpdateSellInOfItems()
+        {
+            foreach (var item in _items)
+            {
                 item.SellIn -= 1;
             }
         }
 
+        private static int UpdateQualityMultiplierValue(Item item)
+        {
+            var qualityMultiplier = (item.SellIn > 0) ? 1 : 2;
+            return qualityMultiplier;
+        }
+
+        private static void UpdateQualityMultiplierByName(Item item, int qualityMultiplier)
+        {
+            
+            switch (item.Name)
+            {
+                case "Aged Brie":
+                    item.Quality += qualityMultiplier;
+                    break;
+                case "Backstage passes to a TAFKAL80ETC concert":
+                    UpdateBackstagePassQuality(item, qualityMultiplier);
+                    break;
+                case "Conjured":
+                    item.Quality -= (qualityMultiplier * 2);
+                    break;
+                default:
+                    item.Quality -= qualityMultiplier;
+                    break;
+            }
+        }
+        
         private static bool IsConjured(Item item)
         {
             var currentItemName = item.Name.Split(" ");
             return currentItemName[0] == "Conjured";
         }
 
-        private static void IsSulfurasItem(Item item)
+        private static void HandleSulfurasItem(Item item)
         {
             if (item.Name != "Sulfuras, Hand of Ragnaros") return;
             item.Quality = 80;
             item.SellIn = 0;
         }
 
-        private static int BackstageQualityMethod(Item item, int qualityMultiplier)
+        private static void UpdateBackstagePassQuality(Item item, int qualityMultiplier)
         {
-            if (item.SellIn < 11) item.Quality += (qualityMultiplier * 2);
-
-            if (item.SellIn < 6) item.Quality += (qualityMultiplier * 3);
-
-            if (item.SellIn == 0) item.Quality = 0;
-
-            else item.Quality += qualityMultiplier;
-
-            return item.Quality;
+            switch (item.SellIn)
+            {
+                case 0:
+                    item.Quality = 0;
+                    break;
+                case < 6:
+                    item.Quality += (qualityMultiplier * 3);
+                    break;
+                case < 11:
+                    item.Quality += (qualityMultiplier * 2);
+                    break;
+                default:
+                    item.Quality += qualityMultiplier;
+                    break;
+            }
+            item.Quality = Math.Min(item.Quality, 50);
         }
     }
 }

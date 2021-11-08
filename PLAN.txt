@@ -2,7 +2,7 @@
 	Selln Value -> Numb. of days to sell item
 	Quality Value -> How valuable an item is
 	At the end of everyday -> each -1 from total
-	ONCE sellByDate passed -> Quality - twice as fast
+	ONCE sellByDate passed -> Quality at double the rate
 	QUALITY -> Never lower than 0 & Never more than 50.
 	"Aged Brie" -> Quality + 1 at end of day
 	"Sulfuras" -> Never sold & Quality never goes down
